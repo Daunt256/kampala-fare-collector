@@ -2,7 +2,7 @@
 
 This first version is for your Android phone with **SafeBoda, Bolt and Faras**. Uber is excluded.
 
-**This package contains source code and build tools. An installable APK has not yet been generated.** The Android SDK downloads were blocked in the development environment. Java syntax, fare logic and the script receiver were checked locally; an Android SDK build and phone testing are still required.
+**A signed test APK has been generated.** The Android SDK build and lint passed in [build run 2](https://github.com/Daunt256/kampala-fare-collector/actions/runs/40008272989). Download **Kampala-Fare-Collector-test-APK** from that run’s Artifacts and extract its APK. Phone installation, provider calibration and the live sheet connection remain to be tested.
 
 ## 1. Generate the APK once
 
@@ -113,7 +113,7 @@ Upload queued quotes before changing route IDs, route search names or product co
 
 Included: source for the Android accessibility collector, guided workflow training and replay, three-app sequential collection, review, encrypted token storage, offline upload queue, screen inspection, the sheet receiver, validation and deduplication, comparison logic, local checks, Windows build script and GitHub build workflow.
 
-Still to verify: Android SDK compilation/lint, installation on your phone, each provider's actual controls and price labels, the live Apps Script deployment, fresh-quote behavior and timing. This version reads accessible text. Screenshot OCR, scheduled unattended jobs, automatic route-list iteration and live multi-phone synchronization are not included in 0.1.
+Still to verify: installation on your phone, each provider's actual controls and price labels, the live Apps Script deployment, fresh-quote behavior and timing. This version reads accessible text. Screenshot OCR, scheduled unattended jobs, automatic route-list iteration and live multi-phone synchronization are not included in 0.1.
 
 ## Technical references
 

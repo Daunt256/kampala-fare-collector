@@ -6,7 +6,7 @@ Native Android pilot for SafeBoda, Bolt and Faras with a Google Apps Script rece
 
 The phone implements user-started, rule-based accessibility workflows, local fare extraction, human review and upload. It neither calls undocumented ride-provider APIs nor generates fares. Screenshot OCR is not part of this build. A real device calibration is required before treating a workflow as reliable.
 
-Build with `Build-APK.ps1`, Android Studio, or the included GitHub Actions workflow. The package has not yet been compiled into an APK because SDK downloads were blocked in the development environment. Do not treat source or syntax checks as an Android build result.
+The test APK was compiled and passed Android lint in [build run 2](https://github.com/Daunt256/kampala-fare-collector/actions/runs/40008272989) on 23 October 2026. Download the APK artifact from that successful run, or build with `Build-APK.ps1`, Android Studio or the included GitHub Actions workflow. Installation and provider screen calibration still need testing on a real phone.
 
 Run the offline checks with JDK 17, Python 3 and Node.js:
 

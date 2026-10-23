@@ -1,19 +1,22 @@
 # Pilot validation — 23 October 2026
 
-Result: source and offline logic checks passed. No APK has been generated yet.
+Result: Android debug APK built successfully and Android lint passed in [GitHub Actions build run 2](https://github.com/Daunt256/kampala-fare-collector/actions/runs/40008272989), at source commit `cf8d91fe0ad944232f5f5247c448abcf969debf0`.
 
 | Check | Result |
 | --- | --- |
-| Pure Java fare parsing, product association, route checks, action guards, currency checks | 44 checks passed |
-| Apps Script validation, authentication, POST ingestion, duplicate retries, conflicts, comparisons, installer boundaries | 34 checks passed using an in-memory Sheets test double |
-| All Java source syntax | Passed with JDK 17 compiler parser |
-| XML resources and manifest | Parsed; package allowlist and requested permissions checked |
-| Android SDK compilation and lint | Not run; SDK and build-tool downloads returned HTTP 403 in the development environment |
-| Windows build script | Prepared; not executed in this Linux environment |
-| GitHub Actions build | Workflow prepared; build result is available under Actions |
-| Live phone and provider workflows | Not run; requires APK installation and calibration on your phone |
-| Live Apps Script deployment | Not deployed; source and setup instructions supplied |
+| Java fare parsing, product association, route checks, action guards and currency checks | 44 checks passed |
+| Apps Script validation, authentication, ingestion, retries, conflicts, comparison and installer boundaries | 34 checks passed using an in-memory Sheets test double |
+| All Java source syntax | Passed |
+| XML resources and manifest | Parsed; package scope and permissions checked |
+| Android SDK compilation | `:app:assembleDebug` passed for API 35, minimum API 26 |
+| Android lint | `:app:lintDebug` passed |
+| Generated artifact | Signed debug test APK; GitHub artifact checksum verified after download |
+| Windows build script | Prepared; not executed in the Linux development environment |
+| Live phone and provider workflows | Pending APK installation and calibration on a real phone |
+| Live Apps Script deployment | Prepared; requires Editor access to the target Google Sheet |
 
-The offline tests do not establish Android API type compatibility, installability, live screen matching, actual price accuracy, refresh timing, or native Google Sheets behavior. The Android build workflow fails if compilation or lint fails. Live collection must be checked against the three apps before relying on the comparisons.
+APK SHA-256: `8c9247a2021205a0bf69b01e815a44c23b9484d290a0b94be4f78c4c3178b661`.
 
-Only SafeBoda, Bolt and Faras are included. Existing workbook tabs and the uploaded XLSX snapshot were not modified during development. Running the supplied installer later creates the four explicitly named FC tabs in the spreadsheet chosen privately during installation.
+Build and logic checks do not establish actual provider screen matching, live price accuracy or fare-refresh timing. Calibrate SafeBoda, Bolt and Faras on the test phone before relying on comparisons. The script receiver has been exercised with a Sheets test double; live Google authorization, deployment and an end-to-end phone upload remain pending.
+
+The installer targets the spreadsheet chosen privately during installation. It creates four FC tabs and does not edit existing monthly analysis tabs. Private spreadsheet IDs, route lists, deployment URLs and pairing tokens are not included in the source or APK.
