@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <queries>
+        <package android:name="com.safeboda.passenger" />
+        <package android:name="ee.mtakso.client" />
+        <package android:name="com.faras.rider" />
+    </queries>
+    <application android:label="Kampala Fare Collector" android:icon="@drawable/ic_collector"
+        android:theme="@style/AppTheme" android:allowBackup="false"
+        android:usesCleartextTraffic="false" android:supportsRtl="true">
+        <activity android:name=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <service android:name=".CollectorService" android:exported="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter><action android:name="android.accessibilityservice.AccessibilityService" /></intent-filter>
+            <meta-data android:name="android.accessibilityservice" android:resource="@xml/accessibility_service" />
+        </service>
+        <provider android:name=".DiagnosticProvider" android:authorities="com.abaho.farecollector.diagnostics"
+            android:exported="false" android:grantUriPermissions="true" />
+    </application>
+</manifest>
