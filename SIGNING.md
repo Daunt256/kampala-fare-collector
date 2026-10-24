@@ -7,3 +7,5 @@ The distribution APK is signed after CI using a persistent private pilot key. Th
 GitHub Actions builds, lints and tests a debug APK. Its temporary debug signature is for CI verification. The signing utility included in the artifact can verify and sign the distribution copy; the artifact contains no private signing key.
 
 Never commit the signing backup, keystore, pairing token, deployed receiver URL or private route list.
+
+Distribution certificate SHA-256: 223cf6038719bd82cd49cc47fcddff8a22af6d1fc63e3434e1549e79bc8de25b.
