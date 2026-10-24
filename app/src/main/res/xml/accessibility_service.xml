@@ -2,7 +2,7 @@
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/accessibility_description"
     android:accessibilityEventTypes="typeViewClicked|typeViewFocused|typeWindowStateChanged|typeWindowContentChanged"
-    android:packageNames="com.safeboda.passenger,ee.mtakso.client,com.faras.rider"
+    android:packageNames="com.safeboda.passenger,ee.mtakso.client,com.faras.rider,br.com.lolo.ride.passenger,com.veritalabs.konnectaClient,com.craftsilicon.littlecabrider,com.codebase.boda.passenger,com.rider.unionapp,com.unionapp.rider,com.tinkauser.user"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:accessibilityFlags="flagReportViewIds|flagRetrieveInteractiveWindows"
     android:canRetrieveWindowContent="true"

@@ -1,0 +1,4 @@
+<resources>
+    <item name="connection_endpoint" type="id" />
+    <item name="connection_token" type="id" />
+</resources>

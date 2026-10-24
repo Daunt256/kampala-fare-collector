@@ -1,22 +1,17 @@
-# Pilot validation — 23 October 2026
+# Pilot validation — 24 October 2026
 
-Result: Android debug APK built successfully and Android lint passed in [GitHub Actions build run 2](https://github.com/Daunt256/kampala-fare-collector/actions/runs/40008272989), at source commit `cf8d91fe0ad944232f5f5247c448abcf969debf0`.
+Version 0.2.0 adds encrypted connection drafts, persistent connection fields, nine-provider coverage and a separate Android package to retain the original pilot’s local data.
 
 | Check | Result |
 | --- | --- |
-| Java fare parsing, product association, route checks, action guards and currency checks | 44 checks passed |
-| Apps Script validation, authentication, ingestion, retries, conflicts, comparison and installer boundaries | 39 checks passed using an in-memory Sheets test double |
-| All Java source syntax | Passed |
-| XML resources and manifest | Parsed; package scope and permissions checked |
-| Android SDK compilation | `:app:assembleDebug` passed for API 35, minimum API 26 |
-| Android lint | `:app:lintDebug` passed |
-| Generated artifact | Signed debug test APK; GitHub artifact checksum verified after download |
-| Windows build script | Prepared; not executed in the Linux development environment |
-| Live phone and provider workflows | Pending APK installation and calibration on a real phone |
-| Live Apps Script deployment | Deployed on 24 October 2026; phone upload pending |
+| Java fare parsing, product association, route/action guards and nine-provider catalog | 78 local checks passed |
+| Apps Script authentication, ingestion, comparisons, published URL selection and nine-provider configuration | 49 local checks passed |
+| Java source syntax, XML, package and permission scope | Passed locally |
+| Android SDK compilation and lint for version 0.2.0 | See latest workflow result |
+| Six Android emulator connection persistence and encrypted-storage tests | See latest workflow result |
+| Apps Script receiver | Existing deployed receiver remains available; expanded catalog rollout follows APK validation |
+| Provider screen calibration and phone upload | Pending tests with the installed passenger apps |
 
-APK SHA-256: `8c9247a2021205a0bf69b01e815a44c23b9484d290a0b94be4f78c4c3178b661`.
+The connection tests cover returning from another app, activity recreation, closing/relaunching, saved credentials and masking, invalid URL rejection, and encrypted drafts/saved tokens. Provider coverage includes selector entries, installed-app detection, training/replay, product configuration and reviewed quote validation. Live app navigation and category labels must be checked on the test phone.
 
-Build and logic checks do not establish actual provider screen matching, live price accuracy or fare-refresh timing. Calibrate SafeBoda, Bolt and Faras on the test phone before relying on comparisons. The script receiver has been exercised with a Sheets test double; Google authorization and web app deployment are complete. An end-to-end phone upload remains pending.
-
-The installer targets the spreadsheet chosen privately during installation. It creates four FC tabs and does not edit existing monthly analysis tabs. Private spreadsheet IDs, route lists, deployment URLs and pairing tokens are not included in the source or APK.
+The installer targets the spreadsheet chosen privately during setup and modifies only the FC tabs. Private spreadsheet IDs, route lists, deployment URLs and pairing tokens are not included in the source or APK.

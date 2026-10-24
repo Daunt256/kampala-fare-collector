@@ -1,7 +1,8 @@
-/** Kampala Fare Collector 0.1.0 — attach to the workbook from Extensions → Apps Script. */
+/** Kampala Fare Collector 0.2.0 — attach to the workbook from Extensions → Apps Script. */
 const COLLECTOR = Object.freeze({
-  version: '0.1.0',
+  version: '0.2.0',
   timezone: 'Africa/Kampala',
+  providers: ["SafeBoda", "Bolt", "Faras", "Lolo Cab", "Konnecta", "Little", "Ride Now", "Union", "Tinka"],
   routes: 'FC Routes', products: 'FC Products', quotes: 'FC Quotes', comparison: 'FC Comparison',
   maxSpreadSeconds: 60,
   quoteHeaders: ['Quote ID','Device ID','Run ID','Route ID','Pickup','Dropoff','Provider','Mode','Product ID','Product','Low UGX','High UGX','Currency','Capture epoch ms','Capture time (Kampala)','Received time (Kampala)','Route verification','Payment method','Promotion status','Raw fare','Fare row text','Reviewed']
@@ -35,7 +36,7 @@ function installCollector() {
     collectorSheet_(ss,COLLECTOR.routes,['Route ID','Pickup search','Dropoff search','Active','Notes']);
     const products = collectorSheet_(ss,COLLECTOR.products,['Product ID','Provider','Mode','Product','Aliases separated by |','Active']);
     collectorSheet_(ss,COLLECTOR.quotes,COLLECTOR.quoteHeaders);
-    if (products.getLastRow() === 1) products.getRange(2,1,10,6).setValues(defaultCollectorProducts_());
+    if (products.getLastRow() === 1) products.getRange(2,1,defaultCollectorProducts_().length,6).setValues(defaultCollectorProducts_());
     if (!props.getProperty('FC_PAIRING_TOKEN')) props.setProperty('FC_PAIRING_TOKEN',newCollectorToken_());
     props.setProperty('FC_INSTALLED','1');
     refreshComparisons_(ss);
@@ -62,16 +63,254 @@ function ensureCollectorGrid_(sheet,rows,columns) {
 }
 
 function defaultCollectorProducts_() { return [
-  ['sb_saver','SafeBoda','Boda','SafeBoda Saver','SafeBoda Saver|Saver',true],
-  ['sb_plus','SafeBoda','Boda','SafeBoda Plus','SafeBoda Plus|Plus',true],
-  ['sb_car','SafeBoda','Car','SafeCar','SafeCar',true],
-  ['sb_xl','SafeBoda','Car','SafeCar XL','SafeCar XL',true],
-  ['bolt_boda','Bolt','Boda','Bolt Boda','Bolt Boda|Boda',true],
-  ['bolt_car','Bolt','Car','Bolt','Bolt',true],
-  ['bolt_xl','Bolt','Car','Bolt XL','Bolt XL|XL',true],
-  ['faras_boda','Faras','Boda','Faras Boda','Faras Boda|Boda',true],
-  ['faras_car','Faras','Car','Faras','Faras',true],
-  ['faras_xl','Faras','Car','Faras XL','Faras XL|XL',true]
+  [
+    "sb_saver",
+    "SafeBoda",
+    "Boda",
+    "SafeBoda Saver",
+    "SafeBoda Saver|Saver",
+    true
+  ],
+  [
+    "sb_plus",
+    "SafeBoda",
+    "Boda",
+    "SafeBoda Plus",
+    "SafeBoda Plus|Plus",
+    true
+  ],
+  [
+    "sb_car",
+    "SafeBoda",
+    "Car",
+    "SafeCar",
+    "SafeCar",
+    true
+  ],
+  [
+    "sb_xl",
+    "SafeBoda",
+    "Car",
+    "SafeCar XL",
+    "SafeCar XL",
+    true
+  ],
+  [
+    "bolt_boda",
+    "Bolt",
+    "Boda",
+    "Bolt Boda",
+    "Bolt Boda|Boda",
+    true
+  ],
+  [
+    "bolt_car",
+    "Bolt",
+    "Car",
+    "Bolt",
+    "Bolt",
+    true
+  ],
+  [
+    "bolt_xl",
+    "Bolt",
+    "Car",
+    "Bolt XL",
+    "Bolt XL|XL",
+    true
+  ],
+  [
+    "faras_boda",
+    "Faras",
+    "Boda",
+    "Faras Boda",
+    "Faras Boda|Boda",
+    true
+  ],
+  [
+    "faras_car",
+    "Faras",
+    "Car",
+    "Faras",
+    "Faras",
+    true
+  ],
+  [
+    "faras_xl",
+    "Faras",
+    "Car",
+    "Faras XL",
+    "Faras XL|XL",
+    true
+  ],
+  [
+    "sb_comfort",
+    "SafeBoda",
+    "Car",
+    "SafeCar Comfort",
+    "SafeCar Comfort|Comfort",
+    true
+  ],
+  [
+    "faras_economy",
+    "Faras",
+    "Car",
+    "Faras Economy",
+    "Faras Economy|Economy",
+    true
+  ],
+  [
+    "lolo_cab",
+    "Lolo Cab",
+    "Car",
+    "Lolo Cab",
+    "Lolo Cab|Lolo",
+    true
+  ],
+  [
+    "lolo_xtra",
+    "Lolo Cab",
+    "Car",
+    "Lolo Xtra",
+    "Lolo Xtra|Xtra",
+    true
+  ],
+  [
+    "lolo_cashless",
+    "Lolo Cab",
+    "Car",
+    "Go Cashless",
+    "Go Cashless",
+    true
+  ],
+  [
+    "lolo_corporate",
+    "Lolo Cab",
+    "Car",
+    "Corporate",
+    "Corporate",
+    true
+  ],
+  [
+    "lolo_boda",
+    "Lolo Cab",
+    "Boda",
+    "Lolo Boda",
+    "Lolo Boda|Boda",
+    true
+  ],
+  [
+    "konnecta_car",
+    "Konnecta",
+    "Car",
+    "Konnecta",
+    "Konnecta",
+    true
+  ],
+  [
+    "konnecta_boda",
+    "Konnecta",
+    "Boda",
+    "Konnecta Boda",
+    "Konnecta Boda|Boda",
+    true
+  ],
+  [
+    "little_basic",
+    "Little",
+    "Car",
+    "Little Basic",
+    "Little Basic|Basic",
+    true
+  ],
+  [
+    "little_comfort",
+    "Little",
+    "Car",
+    "Little Comfort",
+    "Little Comfort|Comfort",
+    true
+  ],
+  [
+    "little_boda",
+    "Little",
+    "Boda",
+    "Little Boda",
+    "Little Boda|Boda",
+    true
+  ],
+  [
+    "ridenow_car",
+    "Ride Now",
+    "Car",
+    "Ride Now",
+    "Ride Now|RideNow",
+    true
+  ],
+  [
+    "ridenow_xl",
+    "Ride Now",
+    "Car",
+    "Ride Now XL",
+    "Ride Now XL|RideNow XL|XL",
+    true
+  ],
+  [
+    "ridenow_boda",
+    "Ride Now",
+    "Boda",
+    "Ride Now Boda",
+    "Ride Now Boda|RideNow Boda|Boda",
+    true
+  ],
+  [
+    "union_car",
+    "Union",
+    "Car",
+    "Union car",
+    "Union car|Union",
+    true
+  ],
+  [
+    "union_max",
+    "Union",
+    "Car",
+    "Union max",
+    "Union max|Max",
+    true
+  ],
+  [
+    "union_boda",
+    "Union",
+    "Boda",
+    "Union boda",
+    "Union boda|Boda",
+    true
+  ],
+  [
+    "tinka_car",
+    "Tinka",
+    "Car",
+    "Tinka",
+    "Tinka|Tinka Go",
+    true
+  ],
+  [
+    "tinka_xl",
+    "Tinka",
+    "Car",
+    "Tinka XL",
+    "Tinka XL|XL",
+    true
+  ],
+  [
+    "tinka_boda",
+    "Tinka",
+    "Boda",
+    "Tinka Boda",
+    "Tinka Boda|Boda",
+    true
+  ]
 ]; }
 
 function newCollectorToken_() { return (Utilities.getUuid()+Utilities.getUuid()).replace(/-/g,''); }
@@ -149,7 +388,7 @@ function readCollectorConfig_(ss) {
   const products=get(COLLECTOR.products,6).filter(r=>activeCollectorRow_(r[5])).map(r=>({id:String(r[0]).trim(),provider:String(r[1]).trim(),mode:String(r[2]).trim(),label:String(r[3]).trim(),aliases:String(r[4]).split('|').map(v=>v.trim()).filter(Boolean)}));
   if(routes.length>200||products.length<1||products.length>50)throw new Error('Check active routes and products.');
   if(new Set(routes.map(r=>r.id)).size!==routes.length||routes.some(r=>!r.id||!r.pickup||!r.dropoff))throw new Error('Routes need unique IDs, pickup and dropoff.');
-  if(new Set(products.map(r=>r.id)).size!==products.length||products.some(r=>!r.id||!r.label||!['SafeBoda','Bolt','Faras'].includes(r.provider)||!['Boda','Car'].includes(r.mode)||!r.aliases.length))throw new Error('Check product IDs, provider, mode and aliases.');
+  if(new Set(products.map(r=>r.id)).size!==products.length||products.some(r=>!r.id||!r.label||!COLLECTOR.providers.includes(r.provider)||!['Boda','Car'].includes(r.mode)||!r.aliases.length))throw new Error('Check product IDs, provider, mode and aliases.');
   return {routes:routes,products:products,timezone:COLLECTOR.timezone,max_spread_seconds:COLLECTOR.maxSpreadSeconds};
 }
 

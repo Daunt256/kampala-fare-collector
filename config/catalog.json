@@ -1,0 +1,340 @@
+{
+  "providers": [
+    {
+      "name": "SafeBoda",
+      "packages": [
+        "com.safeboda.passenger"
+      ],
+      "sources": [
+        "https://play.google.com/store/apps/details?id=com.safeboda.passenger"
+      ]
+    },
+    {
+      "name": "Bolt",
+      "packages": [
+        "ee.mtakso.client"
+      ],
+      "sources": [
+        "https://play.google.com/store/apps/details?id=ee.mtakso.client"
+      ]
+    },
+    {
+      "name": "Faras",
+      "packages": [
+        "com.faras.rider"
+      ],
+      "sources": [
+        "https://play.google.com/store/apps/details?id=com.faras.rider"
+      ]
+    },
+    {
+      "name": "Lolo Cab",
+      "packages": [
+        "br.com.lolo.ride.passenger"
+      ],
+      "sources": [
+        "https://play.google.com/store/apps/details?id=br.com.lolo.ride.passenger"
+      ]
+    },
+    {
+      "name": "Konnecta",
+      "packages": [
+        "com.veritalabs.konnectaClient"
+      ],
+      "sources": [
+        "https://play.google.com/store/apps/details?id=com.veritalabs.konnectaClient"
+      ]
+    },
+    {
+      "name": "Little",
+      "packages": [
+        "com.craftsilicon.littlecabrider"
+      ],
+      "sources": [
+        "https://play.google.com/store/apps/details?id=com.craftsilicon.littlecabrider"
+      ]
+    },
+    {
+      "name": "Ride Now",
+      "packages": [
+        "com.codebase.boda.passenger"
+      ],
+      "sources": [
+        "https://play.google.com/store/apps/details?id=com.codebase.boda.passenger"
+      ]
+    },
+    {
+      "name": "Union",
+      "packages": [
+        "com.rider.unionapp",
+        "com.unionapp.rider"
+      ],
+      "sources": [
+        "https://play.google.com/store/apps/details?id=com.rider.unionapp",
+        "https://play.google.com/store/apps/details?id=com.unionapp.rider"
+      ]
+    },
+    {
+      "name": "Tinka",
+      "packages": [
+        "com.tinkauser.user"
+      ],
+      "sources": [
+        "https://play.google.com/store/apps/details?id=com.tinkauser.user"
+      ]
+    }
+  ],
+  "products": [
+    [
+      "sb_saver",
+      "SafeBoda",
+      "Boda",
+      "SafeBoda Saver",
+      "SafeBoda Saver|Saver",
+      true
+    ],
+    [
+      "sb_plus",
+      "SafeBoda",
+      "Boda",
+      "SafeBoda Plus",
+      "SafeBoda Plus|Plus",
+      true
+    ],
+    [
+      "sb_car",
+      "SafeBoda",
+      "Car",
+      "SafeCar",
+      "SafeCar",
+      true
+    ],
+    [
+      "sb_xl",
+      "SafeBoda",
+      "Car",
+      "SafeCar XL",
+      "SafeCar XL",
+      true
+    ],
+    [
+      "bolt_boda",
+      "Bolt",
+      "Boda",
+      "Bolt Boda",
+      "Bolt Boda|Boda",
+      true
+    ],
+    [
+      "bolt_car",
+      "Bolt",
+      "Car",
+      "Bolt",
+      "Bolt",
+      true
+    ],
+    [
+      "bolt_xl",
+      "Bolt",
+      "Car",
+      "Bolt XL",
+      "Bolt XL|XL",
+      true
+    ],
+    [
+      "faras_boda",
+      "Faras",
+      "Boda",
+      "Faras Boda",
+      "Faras Boda|Boda",
+      true
+    ],
+    [
+      "faras_car",
+      "Faras",
+      "Car",
+      "Faras",
+      "Faras",
+      true
+    ],
+    [
+      "faras_xl",
+      "Faras",
+      "Car",
+      "Faras XL",
+      "Faras XL|XL",
+      true
+    ],
+    [
+      "sb_comfort",
+      "SafeBoda",
+      "Car",
+      "SafeCar Comfort",
+      "SafeCar Comfort|Comfort",
+      true
+    ],
+    [
+      "faras_economy",
+      "Faras",
+      "Car",
+      "Faras Economy",
+      "Faras Economy|Economy",
+      true
+    ],
+    [
+      "lolo_cab",
+      "Lolo Cab",
+      "Car",
+      "Lolo Cab",
+      "Lolo Cab|Lolo",
+      true
+    ],
+    [
+      "lolo_xtra",
+      "Lolo Cab",
+      "Car",
+      "Lolo Xtra",
+      "Lolo Xtra|Xtra",
+      true
+    ],
+    [
+      "lolo_cashless",
+      "Lolo Cab",
+      "Car",
+      "Go Cashless",
+      "Go Cashless",
+      true
+    ],
+    [
+      "lolo_corporate",
+      "Lolo Cab",
+      "Car",
+      "Corporate",
+      "Corporate",
+      true
+    ],
+    [
+      "lolo_boda",
+      "Lolo Cab",
+      "Boda",
+      "Lolo Boda",
+      "Lolo Boda|Boda",
+      true
+    ],
+    [
+      "konnecta_car",
+      "Konnecta",
+      "Car",
+      "Konnecta",
+      "Konnecta",
+      true
+    ],
+    [
+      "konnecta_boda",
+      "Konnecta",
+      "Boda",
+      "Konnecta Boda",
+      "Konnecta Boda|Boda",
+      true
+    ],
+    [
+      "little_basic",
+      "Little",
+      "Car",
+      "Little Basic",
+      "Little Basic|Basic",
+      true
+    ],
+    [
+      "little_comfort",
+      "Little",
+      "Car",
+      "Little Comfort",
+      "Little Comfort|Comfort",
+      true
+    ],
+    [
+      "little_boda",
+      "Little",
+      "Boda",
+      "Little Boda",
+      "Little Boda|Boda",
+      true
+    ],
+    [
+      "ridenow_car",
+      "Ride Now",
+      "Car",
+      "Ride Now",
+      "Ride Now|RideNow",
+      true
+    ],
+    [
+      "ridenow_xl",
+      "Ride Now",
+      "Car",
+      "Ride Now XL",
+      "Ride Now XL|RideNow XL|XL",
+      true
+    ],
+    [
+      "ridenow_boda",
+      "Ride Now",
+      "Boda",
+      "Ride Now Boda",
+      "Ride Now Boda|RideNow Boda|Boda",
+      true
+    ],
+    [
+      "union_car",
+      "Union",
+      "Car",
+      "Union car",
+      "Union car|Union",
+      true
+    ],
+    [
+      "union_max",
+      "Union",
+      "Car",
+      "Union max",
+      "Union max|Max",
+      true
+    ],
+    [
+      "union_boda",
+      "Union",
+      "Boda",
+      "Union boda",
+      "Union boda|Boda",
+      true
+    ],
+    [
+      "tinka_car",
+      "Tinka",
+      "Car",
+      "Tinka",
+      "Tinka|Tinka Go",
+      true
+    ],
+    [
+      "tinka_xl",
+      "Tinka",
+      "Car",
+      "Tinka XL",
+      "Tinka XL|XL",
+      true
+    ],
+    [
+      "tinka_boda",
+      "Tinka",
+      "Boda",
+      "Tinka Boda",
+      "Tinka Boda|Boda",
+      true
+    ]
+  ],
+  "excluded": [
+    "Uber"
+  ]
+}

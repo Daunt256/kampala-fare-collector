@@ -4,11 +4,12 @@ android {
     namespace 'com.abaho.farecollector'
     compileSdk 35
     defaultConfig {
-        applicationId 'com.abaho.farecollector'
+        applicationId 'com.abaho.farecollector.pilot2'
         minSdk 26
         targetSdk 35
-        versionCode 1
-        versionName '0.1.0-pilot'
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        versionCode 2
+        versionName '0.2.0-pilot'
     }
     buildTypes { release { minifyEnabled false } }
     compileOptions {
@@ -18,3 +19,9 @@ android {
     lint { abortOnError true }
 }
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+dependencies {
+    androidTestImplementation "androidx.test.ext:junit:1.2.1"
+    androidTestImplementation "androidx.test:core:1.6.1"
+    androidTestImplementation "androidx.test:runner:1.6.2"
+}

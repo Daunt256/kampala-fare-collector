@@ -16,8 +16,10 @@ def main():
     android = '{http://schemas.android.com/apk/res/android}'
     permissions = {node.attrib[android+'name'] for node in manifest.findall('uses-permission')}
     assert permissions == {'android.permission.INTERNET'}, permissions
+    catalog=json.loads((ROOT/'config/catalog.json').read_text())
+    expected_packages={package for provider in catalog['providers'] for package in provider['packages']}
     packages = {node.attrib[android+'name'] for node in manifest.findall('queries/package')}
-    assert packages == {'com.safeboda.passenger', 'ee.mtakso.client', 'com.faras.rider'}
+    assert packages == expected_packages
     config = ET.parse(ROOT/'app/src/main/res/xml/accessibility_service.xml').getroot()
     assert set(config.attrib[android+'packageNames'].split(',')) == packages
     assert config.attrib[android+'canPerformGestures'] == 'false'
@@ -42,7 +44,7 @@ System.out.println("PASS: Java syntax checked (Android type checking still requi
 ''')
         run([java, 'com.sun.tools.javac.Main', '-d', tmp, parser])
         run([java, '-cp', tmp, 'ParseJava', *sorted(JAVA.glob('*.java'))])
-    run([node, ROOT/'tests/receiver.test.cjs', ROOT/'apps-script/Code.gs'])
+    run([node, ROOT/'tests/receiver.test.cjs', ROOT/'apps-script/Code.gs',ROOT/'config/catalog.json'])
     print('PASS: XML, manifest permissions, package scope and Apps Script manifest')
 
 if __name__ == '__main__':

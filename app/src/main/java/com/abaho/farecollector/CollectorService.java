@@ -30,7 +30,7 @@ public final class CollectorService extends AccessibilityService {
     private void info(String text){message=text;if(status!=null)status.setText(text);store.set("last_status",text);}
     private void fail(String text){replaying=false;training=false;waiting=false;field="";info(text+"\nUse Read prices, return to the start screen, or Stop.");}
     private AccessibilityNodeInfo root(){
-        String expected=provider.isEmpty()?"":FareLogic.packageFor(provider);
+        String expected=provider.isEmpty()?"":store.packageFor(provider);
         AccessibilityNodeInfo n=getRootInActiveWindow();
         if(n!=null&&expected.equals(UiAccess.text(n.getPackageName())))return n;
         if(n!=null)n.recycle();
@@ -50,15 +50,16 @@ public final class CollectorService extends AccessibilityService {
         if(run&&(steps.length()==0||!store.flow(provider,mode).optBoolean("has_pickup")||!store.flow(provider,mode).optBoolean("has_dropoff"))){stop("Teach both route fields for this app and mode first.");return;}
         showPanel();
         info(teach?"Training "+provider+" "+mode+". Navigate to prices. Mark each route field before tapping it.":run?"Starting learned workflow…":"Open the fare screen, then Read prices.");
-        Intent launch=getPackageManager().getLaunchIntentForPackage(FareLogic.packageFor(provider));
+        Intent launch=getPackageManager().getLaunchIntentForPackage(store.packageFor(provider));
         if(launch==null){stop(provider+" is not installed.");return;}
         launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try{startActivity(launch);}catch(RuntimeException e){stop("Could not open "+provider+". Open it manually and retry.");return;}
         if(run){deadline=SystemClock.uptimeMillis()+12000;handler.postDelayed(this::tick,1200);}
     }
-    void startBatch(String vertical,JSONObject selectedRoute){
-        store.set("review","");start("SafeBoda",vertical,selectedRoute,false,true);
-        if(active){batch=new ArrayList<>(Arrays.asList(FareLogic.PROVIDERS));batchIndex=0;batchRun=UUID.randomUUID().toString();}
+    void startBatch(String vertical,JSONObject selectedRoute,List<String> selectedProviders){
+        if(selectedProviders.isEmpty())return;
+        store.set("review","");start(selectedProviders.get(0),vertical,selectedRoute,false,true);
+        if(active){batch=new ArrayList<>(selectedProviders);batchIndex=0;batchRun=UUID.randomUUID().toString();}
     }
     private int dp(int n){return (int)(n*getResources().getDisplayMetrics().density+.5f);}
     private Button button(String label,Runnable action){Button b=new Button(this);b.setText(label);b.setTextSize(11);b.setAllCaps(false);b.setMinHeight(0);b.setMinimumHeight(0);b.setPadding(dp(6),0,dp(6),0);b.setOnClickListener(v->action.run());return b;}
@@ -99,7 +100,7 @@ public final class CollectorService extends AccessibilityService {
         steps.put(value);info("Training "+provider+": "+steps.length()+" actions. Mark fields before tapping them.");
     }
     public void onAccessibilityEvent(AccessibilityEvent event){
-        if(!active||!training||!FareLogic.packageFor(provider).equals(UiAccess.text(event.getPackageName())))return;
+        if(!active||!training||!store.packageFor(provider).equals(UiAccess.text(event.getPackageName())))return;
         if(event.getEventType()!=AccessibilityEvent.TYPE_VIEW_CLICKED&&event.getEventType()!=AccessibilityEvent.TYPE_VIEW_FOCUSED)return;
         AccessibilityNodeInfo source=event.getSource();if(source==null)return;
         try{

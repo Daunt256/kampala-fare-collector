@@ -23,6 +23,14 @@ public class FareLogicTest {
         check(FareLogic.extract(nodes("0/0/0","Saver","0/0/1","UGX 3,000","0/1/0","Saver","0/1/1","UGX 4,000"),FareLogic.defaults(),"SafeBoda","Boda").isEmpty(),"Conflicting duplicate products are not guessed");
         check(FareLogic.activeTripOrLogin("Driver arriving in 3 min"),"Pause active ride");check(FareLogic.activeTripOrLogin("Enter verification code"),"Pause OTP screen");
         check(FareLogic.foreignCurrency("KES 2,500"),"Do not label Kenyan shillings UGX");check(!FareLogic.foreignCurrency("UGX 2,500"),"UGX screen accepted");
+        check(FareLogic.PROVIDERS.length==9,"Nine supported providers from the sheet");
+        check(!java.util.Arrays.asList(FareLogic.PROVIDERS).contains("Uber"),"Uber remains excluded");
+        check(FareLogic.allowedPackage("com.unionapp.rider"),"Recognize the earlier Union passenger app");
+        for(FareLogic.Product p:FareLogic.defaults()) {
+            java.util.List<FareLogic.Node> row=java.util.Arrays.asList(new FareLogic.Node("0/0",p.label),new FareLogic.Node("0/1","UGX 4,500"));
+            java.util.List<FareLogic.Quote> categoryQuotes=FareLogic.extract(row,FareLogic.defaults(),p.provider,p.mode);
+            check(categoryQuotes.size()==1&&categoryQuotes.get(0).product.id.equals(p.id),"Read configured category "+p.id);
+        }
         System.out.println("PASS: "+checks+" fare parsing, category association, route and action guard checks");
     }
 }

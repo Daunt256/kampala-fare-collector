@@ -1,5 +1,6 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),crypto=require('node:crypto');
 const file=process.argv[2];let checks=0;
+const catalog=JSON.parse(fs.readFileSync(process.argv[3]||require('node:path').join(require('node:path').dirname(file),'../config/catalog.json'),'utf8'));
 const context={console,Map,Set,Date,Utilities:{formatDate:(date)=>date.toISOString(),DigestAlgorithm:{SHA_256:'sha256'},computeDigest:(_,s)=>Array.from(crypto.createHash('sha256').update(s).digest())}};
 vm.createContext(context);vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file});
 function test(name,fn){fn();checks++;}
@@ -15,6 +16,7 @@ test('Connection accepts a reported published URL',()=>assert.equal(context.coll
 test('Connection never presents a development URL for phone pairing',()=>assert(!context.collectorConnectionUrl_(null,development).startsWith('https://')));
 test('Untrusted saved endpoint cannot override a published Google URL',()=>assert.equal(context.collectorConnectionUrl_('https://example.test/exec',published),published));
 test('Connection rejects query strings and unpublished links',()=>assert(!context.collectorConnectionUrl_(published+'?key=test',development).startsWith('https://')));
+test('Server catalog matches the provider and product configuration',()=>{assert.deepEqual(JSON.parse(JSON.stringify(context.defaultCollectorProducts_())),catalog.products);assert.deepEqual(Array.from(vm.runInContext('COLLECTOR.providers',context)),catalog.providers.map(p=>p.name));});
 test('Valid range retained',()=>{const row=validate(quote);assert.equal(row[10],3000);assert.equal(row[11],4000);});
 for(const [name,patch] of [
  ['wrong provider',{provider:'Faras'}],['wrong category',{product_id:'unknown'}],['route changed',{dropoff:'Another mall'}],['unreviewed',{reviewed:false}],['unverified route',{route_verification:'unverified'}],['inconsistent fare',{low:2500}],['string fare',{low:'3000'}],['future time',{captured_at:now+3600000}],['missing time',{captured_at:null}],['wrong currency',{currency:'KES'}],['reversed range',{raw:'UGX 4,000-3,000'}],['ETA instead of fare',{raw:'3 min'}],['unknown payment',{payment_method:'magic'}]
@@ -56,7 +58,7 @@ context.PropertiesService={getScriptProperties:()=>({getProperty:k=>properties.g
 context.LockService={getScriptLock:()=>({waitLock:()=>{locked++;},releaseLock:()=>{locked--;}})};
 context.Utilities.getUuid=()=>crypto.randomUUID();context.showCollectorConnection=()=>{};
 context.ContentService={MimeType:{JSON:'application/json'},createTextOutput:body=>({body,setMimeType(){return this;}})};
-test('Installer creates only its own tabs and expands wide report',()=>{context.installCollector();assert(tabs.get('FC Comparison').maxCols>=31);assert.deepEqual(original.data,[['Original data',3000]]);assert.equal(locked,0);assert.equal(properties.get('FC_SPREADSHEET_ID'),ss.getId());assert.equal(tabs.get('FC Routes').getLastRow(),1);});
+test('Installer creates only its own tabs and expands wide report',()=>{context.installCollector();assert(tabs.get('FC Comparison').maxCols>=11+2*catalog.products.length);assert.deepEqual(original.data,[['Original data',3000]]);assert.equal(locked,0);assert.equal(properties.get('FC_SPREADSHEET_ID'),ss.getId());assert.equal(tabs.get('FC Routes').getLastRow(),1);});
 tabs.get('FC Routes').getRange(2,1,1,5).setValues([['R01','Test pickup','Test destination',true,'Synthetic test route']]);
 const pairing=properties.get('FC_PAIRING_TOKEN');
 function post(records,token=pairing){return JSON.parse(context.doPost({postData:{contents:JSON.stringify({action:'submit',token,device_id:'device1111-2222-3333-4444-555555555555',records})}}).body);}
@@ -65,9 +67,11 @@ test('Retry acknowledges without duplicate',()=>{const result=post([quote]);asse
 test('Conflicting ID rejects whole batch before append',()=>{const fresh={...quote,id:'fresh111-2222-3333-4444-555555555555'};const result=post([fresh,{...quote,low:3500,high:3500,raw:'3500'}]);assert.equal(result.ok,false);assert.equal(tabs.get('FC Quotes').getLastRow(),2);});
 test('POST with bad token cannot mutate data',()=>{assert.equal(post([quote],'wrong-token').ok,false);assert.equal(tabs.get('FC Quotes').getLastRow(),2);});
 test('Unreviewed batch cannot append',()=>assert.equal(post([{...quote,id:'fresh222-2222-3333-4444-555555555555',reviewed:false}]).ok,false));
-test('Config requires authentication and returns only allowed providers',()=>{const reply=JSON.parse(context.doPost({postData:{contents:JSON.stringify({action:'config',token:pairing,device_id:'device1111-2222-3333-4444-555555555555'})}}).body);assert(reply.ok);assert(reply.config.products.every(p=>['SafeBoda','Bolt','Faras'].includes(p.provider)));assert(!JSON.stringify(reply).includes(pairing));});
+test('Config requires authentication and returns only allowed providers',()=>{const reply=JSON.parse(context.doPost({postData:{contents:JSON.stringify({action:'config',token:pairing,device_id:'device1111-2222-3333-4444-555555555555'})}}).body);assert(reply.ok);assert(reply.config.products.every(p=>catalog.providers.some(c=>c.name===p.provider)));assert(!JSON.stringify(reply).includes(pairing));});
 test('Installer rerun preserves quotes and pairing',()=>{context.installCollector();assert.equal(tabs.get('FC Quotes').getLastRow(),2);assert.equal(properties.get('FC_PAIRING_TOKEN'),pairing);assert.deepEqual(original.data,[['Original data',3000]]);});
 test('Standalone installer uses the same exact target',()=>{context.SpreadsheetApp.getActiveSpreadsheet=()=>null;context.installCollector();assert.equal(tabs.get('FC Quotes').getLastRow(),2);});
 test('Different bound spreadsheet rejected',()=>{context.SpreadsheetApp.getActiveSpreadsheet=()=>({getId:()=> 'another-spreadsheet'});assert.throws(()=>context.installCollector());assert.equal(tabs.get('FC Quotes').getLastRow(),2);});
 test('Unconfigured standalone cannot choose an implicit workbook',()=>{context.SpreadsheetApp.getActiveSpreadsheet=()=>null;properties.delete('FC_SPREADSHEET_ID');assert.throws(()=>context.installCollector());assert.equal(locked,0);assert.deepEqual(original.data,[['Original data',3000]]);});
+const fullConfig=context.readCollectorConfig_(ss);
+for(const provider of catalog.providers)test('Accept configured quote from '+provider.name,()=>{const product=fullConfig.products.find(p=>p.provider===provider.name);const row=context.validateCollectorRecord_({...quote,provider:provider.name,mode:product.mode,product_id:product.id},fullConfig,'device1111-2222-3333-4444-555555555555',now);assert.equal(row[6],provider.name);});
 console.log(`PASS: ${checks} receiver validation, authentication, ingestion and comparison checks`);

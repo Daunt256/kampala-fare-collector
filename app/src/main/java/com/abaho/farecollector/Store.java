@@ -30,16 +30,31 @@ final class Store {
         }
         return (SecretKey)ks.getKey("collector_token",null);
     }
-    void token(String token) throws Exception {
+    private String encrypt(String token) throws Exception {
         Cipher cipher=Cipher.getInstance("AES/GCM/NoPadding");cipher.init(Cipher.ENCRYPT_MODE,key());
-        String value=Base64.encodeToString(cipher.getIV(),Base64.NO_WRAP)+":"+Base64.encodeToString(cipher.doFinal(token.getBytes(StandardCharsets.UTF_8)),Base64.NO_WRAP);
-        set("token",value);
+        return Base64.encodeToString(cipher.getIV(),Base64.NO_WRAP)+":"+Base64.encodeToString(cipher.doFinal(token.getBytes(StandardCharsets.UTF_8)),Base64.NO_WRAP);
     }
-    String token() throws Exception {
-        String value=get("token","");if(value.isEmpty())return "";
+    private String decrypt(String value) throws Exception {
+        if(value.isEmpty())return "";
         String[] bits=value.split(":",2);Cipher cipher=Cipher.getInstance("AES/GCM/NoPadding");
         cipher.init(Cipher.DECRYPT_MODE,key(),new GCMParameterSpec(128,Base64.decode(bits[0],Base64.NO_WRAP)));
         return new String(cipher.doFinal(Base64.decode(bits[1],Base64.NO_WRAP)),StandardCharsets.UTF_8);
+    }
+    void token(String token) throws Exception {if(!prefs.edit().putString("token",encrypt(token)).commit())throw new IOException("Could not save the token.");}
+    String token() throws Exception {return decrypt(get("token",""));}
+    String draftEndpoint(){return get("connection_url_draft",get("endpoint",""));}
+    String draftToken() throws Exception {return prefs.contains("connection_token_draft")?decrypt(get("connection_token_draft","")):token();}
+    void connectionDraft(String endpoint,String token) throws Exception {
+        String encrypted=encrypt(token);
+        if(!prefs.edit().putString("connection_url_draft",endpoint).putString("connection_token_draft",encrypted).commit())throw new IOException("Could not preserve the connection entries.");
+    }
+    void saveConnection(String endpoint,String token) throws Exception {
+        String encrypted=encrypt(token);
+        if(!prefs.edit().putString("endpoint",endpoint).putString("token",encrypted).putString("connection_url_draft",endpoint).remove("connection_token_draft").commit())throw new IOException("Could not save the connection.");
+    }
+    String packageFor(String provider){
+        for(String name:FareLogic.packagesFor(provider))try{context.getPackageManager().getPackageInfo(name,0);return name;}catch(android.content.pm.PackageManager.NameNotFoundException ignored){}
+        return FareLogic.packageFor(provider);
     }
     JSONObject config(){try{return new JSONObject(get("config",defaults().toString()));}catch(JSONException e){return defaults();}}
     void config(JSONObject config){set("config",config.toString());}

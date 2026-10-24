@@ -1,8 +1,8 @@
 # Kampala Fare Collector — phone pilot
 
-This first version is for your Android phone with **SafeBoda, Bolt and Faras**. Uber is excluded.
+The current app is **Kampala Fare Collector 2**. It supports **SafeBoda, Bolt, Faras, Lolo Cab, Konnecta, Little, Ride Now, Union and Tinka**. Uber is excluded. Install this pilot alongside the first one; keep the original app available for any local records it holds.
 
-**A signed test APK has been generated.** The Android SDK build and lint passed in [build run 2](https://github.com/Daunt256/kampala-fare-collector/actions/runs/40008272989). Download **Kampala-Fare-Collector-test-APK** from that run’s Artifacts and extract its APK. Phone installation, provider calibration and the live sheet connection remain to be tested.
+Download the APK from the latest successful **Build test APK** workflow. Version 0.2 keeps connection entries while you switch apps and shows saved tokens as password dots. Every provider still needs phone calibration.
 
 ## 1. Generate the APK once
 
@@ -60,9 +60,9 @@ If your Google Workspace administrator prevents an Anyone deployment, the token-
 
 1. Install the generated APK and open **Kampala Fare Collector**.
 2. Read the disclosure and continue.
-3. Open **Connection**. Paste the deployment URL and pairing token, then choose **Save and load routes**.
+3. Open **Connection**. Paste the published URL ending in `/exec` and the 64-character pairing token. You can switch to your settings file and back while copying. Choose **Save connection only** to store them, or **Save and load routes** to save and connect in one step. Saved tokens remain masked in the field.
 4. Open **Collect → Enable collection accessibility**, and enable Kampala Fare Collector.
-5. Sign in normally to SafeBoda, Bolt and Faras. The collector does not handle account passwords or verification codes.
+5. Sign in normally to the supported passenger apps you have installed. The collector does not handle account passwords or verification codes.
 
 If Android displays Restricted setting for the installed test app, its App info screen may offer **Allow restricted settings** in the menu. Review Android's warning and enable the service only after you have reviewed this test app's purpose. If the option is absent or a company policy blocks it, stop and report the message.
 
@@ -80,7 +80,7 @@ Start with one short test route from **FC Routes**, in **Boda** mode. Connect an
 
 If it reports **No unambiguous price rows found**, stay on that fare screen and tap **Inspect**. Tap **Stop**, reopen the collector and choose **Share screen details**. Review the exported JSON before sharing it back in this conversation. It includes the phone model, Android version, screen text and control identifiers; email addresses and phone numbers are masked. It never includes the pairing token. Inspect only the fare screen.
 
-Repeat for Bolt and Faras. This first check establishes which visible category labels and screen structures your installed versions expose.
+Repeat for every supported app installed on the test phone. This first check establishes which visible category labels and screen structures your installed versions expose.
 
 ## 5. Teach automatic route entry
 
@@ -96,12 +96,12 @@ Teach each app separately, and teach Boda and Car mode separately.
 
 The pilot matches accessible controls by identifiers and labels. It does not replay blind screen coordinates. If a screen cannot be matched uniquely, collection pauses. A blocked booking, payment or confirmation control is not automatically pressed. If an app requires one of those controls even for route setup, report the screen so its adapter can be reviewed.
 
-After all three workflows work individually, test **Run all three apps for this route**. It collects sequentially on your one phone and presents a combined review. Each captured quote keeps its real timestamp. Start with one route; this pilot does not automatically iterate all routes or run scheduled background jobs.
+After the installed apps work individually, test **Run installed apps for this route**. Apps that are not installed are skipped. It collects sequentially on your one phone and presents a combined review. Each captured quote keeps its real timestamp. Training is separate for each provider and for Boda/Car mode. Start with one route; this pilot does not automatically iterate all routes or run scheduled background jobs.
 
 ## 6. How to read the results
 
 - Fare ranges retain separate low and high values.
-- Each three-app run has a shared Run ID. Separate runs are not silently combined.
+- Each batch run has a shared Run ID. Separate runs are not silently combined.
 - FC Comparison flags missing categories, capture gaps over 60 seconds, unspecified payment or promotion details, and differing payment or promotion states.
 - Blank categories mean no accepted observation; they are not zero prices.
 - Results are observations from the signed-in test accounts, not guaranteed fares for every customer.
@@ -111,9 +111,9 @@ Upload queued quotes before changing route IDs, route search names or product co
 
 ## What is ready, and what still needs proof
 
-Included: source for the Android accessibility collector, guided workflow training and replay, three-app sequential collection, review, encrypted token storage, offline upload queue, screen inspection, the sheet receiver, validation and deduplication, comparison logic, local checks, Windows build script and GitHub build workflow.
+Included: source for the Android accessibility collector, guided workflow training and replay, collection across installed supported apps, review, encrypted token storage, offline upload queue, screen inspection, the sheet receiver, validation and deduplication, comparison logic, local checks, Windows build script and GitHub build workflow.
 
-Still to verify: installation on your phone, each provider's actual controls and price labels, an end-to-end phone upload, fresh-quote behavior and timing. This version reads accessible text. Screenshot OCR, scheduled unattended jobs, automatic route-list iteration and live multi-phone synchronization are not included in 0.1.
+Still to verify: installation on your phone, each provider's actual controls and price labels, an end-to-end phone upload, fresh-quote behavior and timing. This version reads accessible text. Screenshot OCR, scheduled unattended jobs, automatic route-list iteration and live multi-phone synchronization are not included in 0.2.
 
 ## Technical references
 

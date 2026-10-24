@@ -5,8 +5,15 @@
         <package android:name="com.safeboda.passenger" />
         <package android:name="ee.mtakso.client" />
         <package android:name="com.faras.rider" />
+        <package android:name="br.com.lolo.ride.passenger" />
+        <package android:name="com.veritalabs.konnectaClient" />
+        <package android:name="com.craftsilicon.littlecabrider" />
+        <package android:name="com.codebase.boda.passenger" />
+        <package android:name="com.rider.unionapp" />
+        <package android:name="com.unionapp.rider" />
+        <package android:name="com.tinkauser.user" />
     </queries>
-    <application android:label="Kampala Fare Collector" android:icon="@drawable/ic_collector"
+    <application android:label="@string/app_name" android:icon="@drawable/ic_collector"
         android:theme="@style/AppTheme" android:allowBackup="false"
         android:usesCleartextTraffic="false" android:supportsRtl="true">
         <activity android:name=".MainActivity" android:exported="true">
@@ -20,7 +27,7 @@
             <intent-filter><action android:name="android.accessibilityservice.AccessibilityService" /></intent-filter>
             <meta-data android:name="android.accessibilityservice" android:resource="@xml/accessibility_service" />
         </service>
-        <provider android:name=".DiagnosticProvider" android:authorities="com.abaho.farecollector.diagnostics"
+        <provider android:name=".DiagnosticProvider" android:authorities="${applicationId}.diagnostics"
             android:exported="false" android:grantUriPermissions="true" />
     </application>
 </manifest>

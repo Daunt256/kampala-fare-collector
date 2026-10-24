@@ -1,19 +1,15 @@
 # Kampala Fare Collector
 
-Start with **START-HERE.md**.
+Start with [START-HERE.md](START-HERE.md). The current pilot is **Kampala Fare Collector 2**, Android application ID `com.abaho.farecollector.pilot2`, version 0.2.0. It installs alongside the first pilot so that version can retain its local records.
 
-Native Android pilot for SafeBoda, Bolt and Faras with a Google Apps Script receiver. Application ID: `com.abaho.farecollector`. Minimum Android 8.0; compile and target API 35; JDK 17; Gradle 8.9; Android Gradle Plugin 8.7.3. No third-party runtime dependencies.
+The collector includes SafeBoda, Bolt, Faras, Lolo Cab, Konnecta, Little, Ride Now, Union and Tinka. Uber is excluded. The provider/package allowlist and the 31 configurable product categories are recorded in [config/catalog.json](config/catalog.json). The app runs only the supported passenger apps that are installed; each app and mode needs training and fare-screen calibration on the test phone.
 
-The phone implements user-started, rule-based accessibility workflows, local fare extraction, human review and upload. It neither calls undocumented ride-provider APIs nor generates fares. Screenshot OCR is not part of this build. A real device calibration is required before treating a workflow as reliable.
+Connection entries survive switching apps, activity recreation and reopening. Draft tokens and saved tokens use Android Keystore encryption. Saved tokens appear as password dots. **Save connection only** stores the settings without making a network request; **Save and load routes** saves first and then checks the receiver.
 
-The test APK was compiled and passed Android lint in [build run 2](https://github.com/Daunt256/kampala-fare-collector/actions/runs/40008272989) on 23 October 2026. Download the APK artifact from that successful run, or build with `Build-APK.ps1`, Android Studio or the included GitHub Actions workflow. Installation and provider screen calibration still need testing on a real phone.
+Download the APK from the latest successful **Build test APK** workflow. The workflow builds and lints the app and runs Android emulator regression tests for connection persistence before publishing its APK artifact. Minimum Android 8.0; target API 35; JDK 17; Gradle 8.9; Android Gradle Plugin 8.7.3. Test-only AndroidX dependencies are not included in the collector APK.
 
-Run the offline checks with JDK 17, Python 3 and Node.js:
+The phone uses user-started accessibility workflows and readable screen text. It stops before booking/payment controls and requires review before upload. It does not generate prices or call undocumented ride-provider APIs. A configured provider is not a claim that its current phone screens have already been calibrated.
 
-```bash
-python3 tools/check_project.py
-```
+Run the local checks with `python3 tools/check_project.py`. Android connection tests are in `app/src/androidTest` and run with `gradle :app:connectedDebugAndroidTest` on a device or emulator.
 
-The checks exercise fare parsing, product association, action guards, route validation, Apps Script authentication, ingestion, idempotent retries, conflicting-ID rejection, comparison timing, blank versus zero, and preservation of an unrelated worksheet using an in-memory test double. They parse all Java source and XML files but do not replace Android SDK type checking, lint or device tests.
-
-The script creates only the `FC Routes`, `FC Products`, `FC Quotes`, and `FC Comparison` tabs. Attach it through the target sheet’s **Extensions → Apps Script** menu; setup saves that spreadsheet’s ID privately in Script properties. Existing monthly tabs are not edited. Routes, pairing tokens and deployment URLs stay out of this public repository. The phone loads routes only after connecting to the receiver.
+Attach the receiver using the target Google Sheet’s **Extensions → Apps Script** menu. It writes only to the four FC tabs. Routes, pairing tokens and deployed URLs stay private and are not committed to this repository.
