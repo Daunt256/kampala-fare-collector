@@ -9,6 +9,12 @@ const now=Date.now(),config={routes:[{id:'R01',pickup:'Test pickup',dropoff:'Tes
  {id:'faras_boda',provider:'Faras',mode:'Boda',label:'Faras Boda'}],max_spread_seconds:60};
 const quote={id:'aaaa1111-2222-3333-4444-555555555555',run_id:'bbbb1111-2222-3333-4444-555555555555',route_id:'R01',pickup:config.routes[0].pickup,dropoff:config.routes[0].dropoff,provider:'SafeBoda',mode:'Boda',product_id:'sb_saver',low:3000,high:4000,currency:'UGX',raw:'UGX 3,000-4,000',captured_at:now-10000,reviewed:true,route_verification:'user_confirmed',payment_method:'cash',promotion_status:'none_shown',evidence:'Saver | UGX 3,000-4,000'};
 const validate=r=>context.validateCollectorRecord_(r,config,'device1111-2222-3333-4444-555555555555',now);
+const published='https://script.google.com/macros/s/test-deployment-123/exec',development='https://script.google.com/a/example.test/macros/s/test-development-123/dev';
+test('Connection uses saved published URL instead of editor development URL',()=>assert.equal(context.collectorConnectionUrl_(published,development),published));
+test('Connection accepts a reported published URL',()=>assert.equal(context.collectorConnectionUrl_(null,published),published));
+test('Connection never presents a development URL for phone pairing',()=>assert(!context.collectorConnectionUrl_(null,development).startsWith('https://')));
+test('Untrusted saved endpoint cannot override a published Google URL',()=>assert.equal(context.collectorConnectionUrl_('https://example.test/exec',published),published));
+test('Connection rejects query strings and unpublished links',()=>assert(!context.collectorConnectionUrl_(published+'?key=test',development).startsWith('https://')));
 test('Valid range retained',()=>{const row=validate(quote);assert.equal(row[10],3000);assert.equal(row[11],4000);});
 for(const [name,patch] of [
  ['wrong provider',{provider:'Faras'}],['wrong category',{product_id:'unknown'}],['route changed',{dropoff:'Another mall'}],['unreviewed',{reviewed:false}],['unverified route',{route_verification:'unverified'}],['inconsistent fare',{low:2500}],['string fare',{low:'3000'}],['future time',{captured_at:now+3600000}],['missing time',{captured_at:null}],['wrong currency',{currency:'KES'}],['reversed range',{raw:'UGX 4,000-3,000'}],['ETA instead of fare',{raw:'3 min'}],['unknown payment',{payment_method:'magic'}]

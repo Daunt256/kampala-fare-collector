@@ -75,14 +75,18 @@ function defaultCollectorProducts_() { return [
 ]; }
 
 function newCollectorToken_() { return (Utilities.getUuid()+Utilities.getUuid()).replace(/-/g,''); }
+function collectorConnectionUrl_(saved,reported) {
+  const published=value=>typeof value==='string'&&/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(value);
+  return [saved,reported].find(published)||'Copy the published /exec URL from Deploy → Manage deployments.';
+}
 function showCollectorConnection() {
-  const token=PropertiesService.getScriptProperties().getProperty('FC_PAIRING_TOKEN');
+  const props=PropertiesService.getScriptProperties(),token=props.getProperty('FC_PAIRING_TOKEN');
   if(!token) throw new Error('Run installCollector first.');
   if(!SpreadsheetApp.getActiveSpreadsheet()) {
     console.log('Setup complete. For a standalone project, copy FC_PAIRING_TOKEN from Project Settings → Script properties. Copy the /exec URL from Deploy → Manage deployments.');
     return;
   }
-  const url=ScriptApp.getService().getUrl() || 'Deploy as a web app first, then use its /exec URL.';
+  const url=collectorConnectionUrl_(props.getProperty('FC_WEB_APP_URL'),ScriptApp.getService().getUrl());
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const html='<div style="font:15px Arial;padding:18px"><h2>Connect your phone</h2><p>Deployment URL</p><textarea readonly style="width:100%;height:70px">'+esc(url)+'</textarea><p>Pairing token — keep private</p><textarea readonly style="width:100%;height:65px">'+esc(token)+'</textarea><p>Paste both into the phone app’s Connection screen. Reload routes after changing FC Routes or FC Products.</p></div>';
   SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutput(html).setWidth(540).setHeight(390),'Fare Collector connection');
