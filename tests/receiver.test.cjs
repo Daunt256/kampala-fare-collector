@@ -72,6 +72,24 @@ test('Installer rerun preserves quotes and pairing',()=>{context.installCollecto
 test('Standalone installer uses the same exact target',()=>{context.SpreadsheetApp.getActiveSpreadsheet=()=>null;context.installCollector();assert.equal(tabs.get('FC Quotes').getLastRow(),2);});
 test('Different bound spreadsheet rejected',()=>{context.SpreadsheetApp.getActiveSpreadsheet=()=>({getId:()=> 'another-spreadsheet'});assert.throws(()=>context.installCollector());assert.equal(tabs.get('FC Quotes').getLastRow(),2);});
 test('Unconfigured standalone cannot choose an implicit workbook',()=>{context.SpreadsheetApp.getActiveSpreadsheet=()=>null;properties.delete('FC_SPREADSHEET_ID');assert.throws(()=>context.installCollector());assert.equal(locked,0);assert.deepEqual(original.data,[['Original data',3000]]);});
+properties.set('FC_SPREADSHEET_ID',ss.getId());
+test('All six observed SafeBoda ranges survive the existing receiver and comparison writer',()=>{
+ const fixtures=[['sb_saver',2800,3200],['sb_plus',3300,3700],['sb_ev',2800,3200],['sb_car',12000,12300],['sb_comfort',14000,14300],['sb_xl',15000,15300]];
+ const records=fixtures.map(([id,low,high],index)=>{
+  const p=catalog.products.find(p=>p[0]===id);
+  const raw='UGX '+low.toLocaleString('en-US')+' - '+high.toLocaleString('en-US');
+  return {...quote,id:'range-fixture-2026-000'+index,run_id:'range-fixture-run-2026-0001',captured_at:now,product_id:id,mode:p[2],low,high,raw,evidence:p[3]+' | '+raw.replace(' - ',' ~ ')+' | '};
+ });
+ const reply=post(records);assert.equal(reply.ok,true);assert.equal(reply.appended,6);
+ for(const record of records){
+  const stored=tabs.get('FC Quotes').data.find(row=>row[0]===record.id);
+  assert.equal(stored[10],record.low);assert.equal(stored[11],record.high);
+  assert.equal(stored[20],record.evidence);
+  const comparison=tabs.get('FC Comparison').data.find(row=>row[4]===record.run_id&&row[3]===record.mode);
+  const offset=11+2*catalog.products.findIndex(p=>p[0]===record.product_id);
+  assert.equal(comparison[offset],record.low);assert.equal(comparison[offset+1],record.high);
+ }
+});
 const fullConfig=context.readCollectorConfig_(ss);
 for(const provider of catalog.providers)test('Accept configured quote from '+provider.name,()=>{const product=fullConfig.products.find(p=>p.provider===provider.name);const row=context.validateCollectorRecord_({...quote,provider:provider.name,mode:product.mode,product_id:product.id},fullConfig,'device1111-2222-3333-4444-555555555555',now);assert.equal(row[6],provider.name);});
 console.log(`PASS: ${checks} receiver validation, authentication, ingestion and comparison checks`);

@@ -1,17 +1,16 @@
 # Pilot validation — 24 October 2026
 
-Version 0.2.0 adds encrypted connection drafts, persistent connection fields, nine-provider coverage and a separate Android package to retain the original pilot’s local data.
+Version 0.2.1 fixes SafeBoda tilde fare ranges, adds Insured Plus aliases and Electric Boda, and keeps nine providers with 32 categories. It installs as **Kampala Fare Collector 2.1** beside the previous pilot.
 
 | Check | Result |
 | --- | --- |
-| Java fare parsing, product association, route/action guards and nine-provider catalog | 78 local checks passed |
-| Apps Script authentication, ingestion, comparisons, published URL selection and nine-provider configuration | 49 local checks passed |
+| Java fare parsing, six observed ranges, category association, metadata labels and guards | 121 local checks passed |
+| Receiver validation, ingestion and range-preserving comparison writes | 50 local checks passed |
 | Java source syntax, XML, package and permission scope | Passed locally |
-| Android SDK compilation and lint for version 0.2.0 | See latest workflow result |
-| Six Android emulator connection persistence and encrypted-storage tests | See latest workflow result |
-| Apps Script receiver | Existing deployed receiver remains available; expanded catalog rollout follows APK validation |
-| Provider screen calibration and phone upload | Pending tests with the installed passenger apps |
+| Android SDK build, lint and eight emulator checks | See the workflow for this commit |
+| Existing deployed receiver compatibility | Upload payload normalizes only tilde separators; original row text remains evidence |
+| Live phone confirmation | Updated pilot still needs a fresh capture on the user's phone |
 
-The connection tests cover returning from another app, activity recreation, closing/relaunching, saved credentials and masking, invalid URL rejection, and encrypted drafts/saved tokens. Provider coverage includes selector entries, installed-app detection, training/replay, product configuration and reviewed quote validation. Live app navigation and category labels must be checked on the test phone.
+The new Android tests verify that all six ranges survive queue storage and upload preparation, that source evidence is retained, and that the review screen displays both endpoints. The original six connection persistence tests remain enabled.
 
-The installer targets the spreadsheet chosen privately during setup and modifies only the FC tabs. Private spreadsheet IDs, route lists, deployment URLs and pairing tokens are not included in the source or APK.
+Regression fixtures reproduce the reported Boda and Car fare formats without using private routes or pairing settings. Receiver tests use an in-memory spreadsheet; they do not append artificial observations to the live workbook. Existing live quote records are not rewritten. Only FC Products needs the Insured Plus alias and appended Electric Boda row; the existing receiver reads that configuration directly.

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Kampala Fare Collector 2</string>
+    <string name="app_name">Kampala Fare Collector 2.1</string>
     <string name="accessibility_description">During a collection session you start, read visible route and fare text and replay the navigation you taught in SafeBoda, Bolt, Faras, Lolo Cab, Konnecta, Little, Ride Now, Union and Tinka. Stops at the fare screen. Does not request rides, read passwords, or access other apps. You can stop or disable the service at any time.</string>
     <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
         <item name="android:fontFamily">sans</item>

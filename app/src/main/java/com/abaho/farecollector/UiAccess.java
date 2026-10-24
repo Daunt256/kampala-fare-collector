@@ -58,7 +58,7 @@ final class UiAccess {
     }
     static JSONObject diagnostic(AccessibilityNodeInfo root,String provider,String mode,JSONObject route)throws JSONException{
         JSONArray nodes=new JSONArray();dump(root,"0",0,nodes);
-        return new JSONObject().put("version","0.2.0").put("provider",provider).put("mode",mode).put("route_id",route.optString("id"))
+        return new JSONObject().put("version","0.2.1").put("provider",provider).put("mode",mode).put("route_id",route.optString("id"))
             .put("captured_at",System.currentTimeMillis()).put("android_api",android.os.Build.VERSION.SDK_INT)
             .put("device_model",android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL).put("nodes",nodes);
     }

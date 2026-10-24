@@ -53,7 +53,7 @@ public final class MainActivity extends Activity {
         button("I understand — continue",()->{store.consent(true);show();});
     }
     private void collect(){
-        line("Pilot 0.2 · one phone · "+FareLogic.PROVIDERS.length+" supported providers");
+        line("Pilot 0.2.1 · one phone · "+FareLogic.PROVIDERS.length+" supported providers");
         line(CollectorService.instance==null?"Accessibility: not connected":"Accessibility: connected");
         button("Enable collection accessibility",()->startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
         line("Route");JSONArray routes=store.config().optJSONArray("routes");if(routes==null||routes.length()==0){line("No routes configured. Connect to your script first.");return;}

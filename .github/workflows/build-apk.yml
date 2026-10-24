@@ -30,7 +30,7 @@ jobs:
         run: gradle --no-daemon :app:assembleDebug :app:lintDebug
       - name: Enable emulator acceleration
         run: sudo chmod 666 /dev/kvm
-      - name: Test connection persistence on Android
+      - name: Test connection persistence and fare ranges on Android
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
@@ -40,9 +40,15 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: gradle --no-daemon :app:connectedDebugAndroidTest
+      - name: Stage APK signing utility
+        run: |
+          mkdir -p signing-tool
+          cp "$ANDROID_HOME/build-tools/35.0.0/lib/apksigner.jar" signing-tool/apksigner.jar
       - uses: actions/upload-artifact@v4
         with:
           name: Kampala-Fare-Collector-test-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: |
+            app/build/outputs/apk/debug/app-debug.apk
+            signing-tool/apksigner.jar
           if-no-files-found: error
           retention-days: 14

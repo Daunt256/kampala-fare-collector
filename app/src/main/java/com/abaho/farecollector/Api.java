@@ -18,7 +18,7 @@ final class Api {
             try{
                 String endpoint=store.get("endpoint","");if(!validEndpoint(endpoint))throw new IOException("Enter the deployed Apps Script /exec URL in Connection.");
                 JSONObject body=new JSONObject().put("action",action).put("token",store.token()).put("device_id",store.deviceId());
-                if(records!=null)body.put("records",records);
+                if(records!=null)body.put("records",recordsForReceiver(records));
                 JSONObject result=request(endpoint,body.toString());
                 if(!result.optBoolean("ok"))throw new IOException(result.optString("error","Receiver rejected the request."));
                 if(action.equals("config")){JSONObject config=result.getJSONObject("config");validateConfig(config);store.config(config);}
@@ -32,6 +32,14 @@ final class Api {
                 callback.done(result,null);
             }catch(Exception e){callback.done(null,e);}
         },"collector-upload").start();
+    }
+    static JSONArray recordsForReceiver(JSONArray records)throws JSONException {
+        JSONArray copy=new JSONArray(records.toString());
+        for(int i=0;i<copy.length();i++){
+            JSONObject row=copy.getJSONObject(i);
+            row.put("raw",FareLogic.receiverFare(row.getString("raw")));
+        }
+        return copy;
     }
     private static void validateConfig(JSONObject config)throws JSONException,IOException{
         JSONArray routes=config.getJSONArray("routes"),products=config.getJSONArray("products");

@@ -1,8 +1,8 @@
 # Kampala Fare Collector
 
-Start with [START-HERE.md](START-HERE.md). The current pilot is **Kampala Fare Collector 2**, Android application ID `com.abaho.farecollector.pilot2`, version 0.2.0. It installs alongside the first pilot so that version can retain its local records.
+Start with [START-HERE.md](START-HERE.md). The current pilot is **Kampala Fare Collector 2.1**, Android application ID `com.abaho.farecollector.pilot3`, version 0.2.1. It installs alongside the first pilot so that version can retain its local records.
 
-The collector includes SafeBoda, Bolt, Faras, Lolo Cab, Konnecta, Little, Ride Now, Union and Tinka. Uber is excluded. The provider/package allowlist and the 31 configurable product categories are recorded in [config/catalog.json](config/catalog.json). The app runs only the supported passenger apps that are installed; each app and mode needs training and fare-screen calibration on the test phone.
+The collector includes SafeBoda, Bolt, Faras, Lolo Cab, Konnecta, Little, Ride Now, Union and Tinka. Uber is excluded. The provider/package allowlist and the 32 configurable product categories are recorded in [config/catalog.json](config/catalog.json). The app runs only the supported passenger apps that are installed; each app and mode needs training and fare-screen calibration on the test phone.
 
 Connection entries survive switching apps, activity recreation and reopening. Draft tokens and saved tokens use Android Keystore encryption. Saved tokens appear as password dots. **Save connection only** stores the settings without making a network request; **Save and load routes** saves first and then checks the receiver.
 
@@ -13,3 +13,5 @@ The phone uses user-started accessibility workflows and readable screen text. It
 Run the local checks with `python3 tools/check_project.py`. Android connection tests are in `app/src/androidTest` and run with `gradle :app:connectedDebugAndroidTest` on a device or emulator.
 
 Attach the receiver using the target Google Sheet’s **Extensions → Apps Script** menu. It writes only to the four FC tabs. Routes, pairing tokens and deployed URLs stay private and are not committed to this repository.
+
+Version 0.2.1 recognizes SafeBoda **Insured Plus** and **Electric Boda**, and preserves both amounts in `UGX 2,800 ~ 3,200`. It also accepts category labels merged with seats and ETA. Before upload, only tilde separators are converted to dashes for compatibility with the deployed receiver; the complete original fare text remains in the local record and Fare row text. Existing sheet observations are not rewritten. See [SIGNING.md](SIGNING.md) for distribution signing.

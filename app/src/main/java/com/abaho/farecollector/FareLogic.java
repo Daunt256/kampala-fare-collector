@@ -11,8 +11,9 @@ public final class FareLogic {
     public static final String[] PACKAGES = {"com.safeboda.passenger", "ee.mtakso.client", "com.faras.rider", "br.com.lolo.ride.passenger", "com.veritalabs.konnectaClient", "com.craftsilicon.littlecabrider", "com.codebase.boda.passenger", "com.rider.unionapp", "com.unionapp.rider", "com.tinkauser.user"};
     private static final String NUM = "(?:\\d{1,3}(?:,\\d{3})+|\\d{3,7})";
     private static final String CUR = "(?:UGX|UShs?|Shs?)";
-    private static final Pattern PRICE = Pattern.compile("^\\s*(?:"+CUR+"\\s*)?("+NUM+")(?:\\s*[-–—]\\s*(?:"+CUR+"\\s*)?("+NUM+"))?\\s*(?:"+CUR+")?\\s*$", Pattern.CASE_INSENSITIVE);
-    private static final Pattern EMBEDDED = Pattern.compile("\\b"+CUR+"\\s*"+NUM+"(?:\\s*[-–—]\\s*(?:"+CUR+"\\s*)?"+NUM+")?(?![\\d,.])", Pattern.CASE_INSENSITIVE);
+    private static final String RANGE = "[-–—~〜～]";
+    private static final Pattern PRICE = Pattern.compile("^\\s*(?:"+CUR+"\\s*)?("+NUM+")(?:\\s*"+RANGE+"\\s*(?:"+CUR+"\\s*)?("+NUM+"))?\\s*(?:"+CUR+")?\\s*$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern EMBEDDED = Pattern.compile("\\b"+CUR+"\\s*"+NUM+"(?:\\s*"+RANGE+"\\s*(?:"+CUR+"\\s*)?"+NUM+")?(?![\\d,.]|\\s*"+RANGE+")", Pattern.CASE_INSENSITIVE);
     private static final Pattern FORBIDDEN = Pattern.compile("\\b(request|book|confirm|order|pay|payment|purchase|checkout|accept|cancel\\s+(?:ride|trip)|start\\s+(?:ride|trip))\\b", Pattern.CASE_INSENSITIVE);
     public static String norm(String s) {
         if (s == null) return "";
@@ -72,6 +73,11 @@ public final class FareLogic {
         while (m.find()) { Price p=parsePrice(m.group());if(p!=null)out.add(p); }
         return out;
     }
+    /** The deployed 0.2 receiver accepts dashes. Retain the observed text locally and in evidence. */
+    public static String receiverFare(String raw) {
+        if(parsePrice(raw)==null)throw new IllegalArgumentException("Invalid fare text.");
+        return raw.replace('~','-').replace('〜','-').replace('～','-');
+    }
     public static final class Product {
         public final String id,label,provider,mode; public final List<String> aliases;
         public Product(String id,String label,String provider,String mode,String... aliases) {
@@ -81,7 +87,7 @@ public final class FareLogic {
     public static List<Product> defaults() {
         return Arrays.asList(
             new Product("sb_saver","SafeBoda Saver","SafeBoda","Boda","SafeBoda Saver","Saver"),
-            new Product("sb_plus","SafeBoda Plus","SafeBoda","Boda","SafeBoda Plus","Plus"),
+            new Product("sb_plus","SafeBoda Plus","SafeBoda","Boda","SafeBoda Plus","Insured Plus","Plus"),
             new Product("sb_car","SafeCar","SafeBoda","Car","SafeCar"),
             new Product("sb_xl","SafeCar XL","SafeBoda","Car","SafeCar XL"),
             new Product("bolt_boda","Bolt Boda","Bolt","Boda","Bolt Boda","Boda"),
@@ -110,7 +116,8 @@ public final class FareLogic {
             new Product("union_boda","Union boda","Union","Boda","Union boda","Boda"),
             new Product("tinka_car","Tinka","Tinka","Car","Tinka","Tinka Go"),
             new Product("tinka_xl","Tinka XL","Tinka","Car","Tinka XL","XL"),
-            new Product("tinka_boda","Tinka Boda","Tinka","Boda","Tinka Boda","Boda")
+            new Product("tinka_boda","Tinka Boda","Tinka","Boda","Tinka Boda","Boda"),
+            new Product("sb_ev","Electric Boda","SafeBoda","Boda","Electric Boda","SafeBoda EV","EV")
         );
     }
     public static final class Node {
@@ -125,7 +132,9 @@ public final class FareLogic {
         String label=text==null?"":text;
         Matcher m=EMBEDDED.matcher(label);
         if(m.find()) label=label.substring(0,m.start());
-        String n=norm(label); Product found=null;
+        // Some accessibility nodes merge the category, seats and ETA into one label.
+        String n=norm(label).replaceFirst("(?: \\d{1,2})? \\d{1,3} (?:mins?|minutes?)$","");
+        Product found=null;
         for(Product p:products) for(String alias:p.aliases) if(n.equals(norm(alias))) {
             if(found!=null&&!found.id.equals(p.id)) return null;
             found=p;

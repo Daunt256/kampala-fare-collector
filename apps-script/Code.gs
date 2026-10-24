@@ -76,7 +76,7 @@ function defaultCollectorProducts_() { return [
     "SafeBoda",
     "Boda",
     "SafeBoda Plus",
-    "SafeBoda Plus|Plus",
+    "SafeBoda Plus|Insured Plus|Plus",
     true
   ],
   [
@@ -309,6 +309,14 @@ function defaultCollectorProducts_() { return [
     "Boda",
     "Tinka Boda",
     "Tinka Boda|Boda",
+    true
+  ],
+  [
+    "sb_ev",
+    "SafeBoda",
+    "Boda",
+    "Electric Boda",
+    "Electric Boda|SafeBoda EV|EV",
     true
   ]
 ]; }

@@ -4,12 +4,12 @@ android {
     namespace 'com.abaho.farecollector'
     compileSdk 35
     defaultConfig {
-        applicationId 'com.abaho.farecollector.pilot2'
+        applicationId 'com.abaho.farecollector.pilot3'
         minSdk 26
         targetSdk 35
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode 2
-        versionName '0.2.0-pilot'
+        versionCode 3
+        versionName '0.2.1-pilot'
     }
     buildTypes { release { minifyEnabled false } }
     compileOptions {

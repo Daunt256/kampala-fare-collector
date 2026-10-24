@@ -1,8 +1,14 @@
 # Kampala Fare Collector — phone pilot
 
-The current app is **Kampala Fare Collector 2**. It supports **SafeBoda, Bolt, Faras, Lolo Cab, Konnecta, Little, Ride Now, Union and Tinka**. Uber is excluded. Install this pilot alongside the first one; keep the original app available for any local records it holds.
+The current app is **Kampala Fare Collector 2.1**. It supports **SafeBoda, Bolt, Faras, Lolo Cab, Konnecta, Little, Ride Now, Union and Tinka**. Uber is excluded. Install this pilot alongside the first one; keep the original app available for any local records it holds.
 
 Download the APK from the latest successful **Build test APK** workflow. Version 0.2 keeps connection entries while you switch apps and shows saved tokens as password dots. Every provider still needs phone calibration.
+
+## Fare range fix in 0.2.1
+
+Install the distributed **Kampala Fare Collector 2.1** APK alongside the previous pilot. Use the same private connection settings, choose **Save and load routes**, and enable the new app's accessibility service. Its initial connection and training are separate from the older app. Existing phone records and sheet observations remain available in their original locations.
+
+SafeBoda Boda should capture **Saver**, **Insured Plus** and **Electric Boda**. SafeCar should retain **SafeCar**, **Comfort** and **SafeCar XL**. Check both range endpoints in Review before accepting. The upload adapter works with the existing receiver; no script redeployment is required. Refresh products on the phone after adding the Insured Plus alias and Electric Boda row to FC Products. Recollect affected observations as fresh quotes rather than overwriting historical data.
 
 ## 1. Generate the APK once
 
